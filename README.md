@@ -21,7 +21,21 @@ Production-style multi-agent AI workflow platform for enterprise document intell
 
 ## UI Preview
 
-![App UI](docs/screenshots/app_ui.png)
+### Initial UI
+
+![Initial UI](docs/screenshots/app_ui.png)
+
+---
+
+### Real GPT Response
+
+![Real GPT Response](docs/screenshots/real-gpt-response.png)
+
+---
+
+### Advanced GPT Workflow
+
+![Advanced GPT Workflow](docs/screenshots/real-gpt-response2.png)
 
 ---
 
