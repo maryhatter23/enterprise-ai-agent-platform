@@ -1,6 +1,5 @@
 import os
 import fitz
-
 from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, File
 from openai import OpenAI

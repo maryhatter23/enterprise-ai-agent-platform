@@ -1,6 +1,7 @@
 import os
 import fitz
 
+from app.rag.vector_store import add_document_to_vector_db, retrieve_relevant_chunks
 from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, File
 from openai import OpenAI
@@ -45,23 +46,32 @@ async def upload_document(file: UploadFile = File(...)):
     else:
         DOCUMENT_CONTEXT = content.decode("utf-8", errors="ignore")
 
+    chunks_added = add_document_to_vector_db(
+        DOCUMENT_CONTEXT,
+        file.filename
+    )
+
     return {
         "filename": file.filename,
         "characters_extracted": len(DOCUMENT_CONTEXT),
+        "chunks_added_to_vector_db": chunks_added,
         "message": "Document uploaded and processed successfully."
     }
 
 
 @app.post("/ask")
 def ask_question(request: QuestionRequest):
+    relevant_chunks = retrieve_relevant_chunks(request.question)
+    retrieved_context = "\n\n".join(relevant_chunks)
+
     prompt = f"""
 You are an enterprise document intelligence assistant.
 
-Use the document context below to answer the user's question.
-If the answer is not available in the document, say that the document does not provide enough information.
+Use the retrieved document context below to answer the user's question.
+If the answer is not available in the retrieved context, say that the document does not provide enough information.
 
-Document Context:
-{DOCUMENT_CONTEXT}
+Retrieved Document Context:
+{retrieved_context}
 
 User Question:
 {request.question}
@@ -72,7 +82,7 @@ User Question:
         messages=[
             {
                 "role": "system",
-                "content": "You answer questions based on uploaded enterprise documents."
+                "content": "You answer questions based on retrieved enterprise document chunks."
             },
             {
                 "role": "user",
@@ -84,5 +94,6 @@ User Question:
     return {
         "question": request.question,
         "answer": completion.choices[0].message.content,
-        "context_length": len(DOCUMENT_CONTEXT)
+        "context_length": len(retrieved_context),
+        "retrieved_chunks": relevant_chunks
     }
