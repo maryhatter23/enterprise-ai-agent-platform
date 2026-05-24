@@ -83,15 +83,18 @@ Final Response
 
 ---
 
-## Future Improvements
+## Features
 
-- OpenAI API integration
+- OpenAI-powered question answering
+- PDF and TXT document upload
+- Text extraction from uploaded documents
+- Document chunking
+- Embedding generation with Sentence Transformers
 - ChromaDB vector storage
-- Real embeddings
-- Citation tracing
-- Advanced evaluation metrics
-- Observability and logging
-- Production deployment
+- Semantic retrieval over document chunks
+- Citation-aware RAG pipeline with source metadata
+- FastAPI backend
+- Streamlit frontend
 
 ---
 
