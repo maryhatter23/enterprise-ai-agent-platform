@@ -56,7 +56,7 @@ def add_document_to_vector_db(text: str, filename: str = "uploaded_document") ->
     return len(chunks)
 
 
-def retrieve_relevant_chunks(query: str, top_k: int = 3) -> list[str]:
+def retrieve_relevant_chunks(query: str, top_k: int = 3) -> list[dict]:
     query_embedding = embedding_model.encode([query]).tolist()[0]
 
     results = collection.query(
@@ -64,9 +64,17 @@ def retrieve_relevant_chunks(query: str, top_k: int = 3) -> list[str]:
         n_results=top_k
     )
 
-    documents = results.get("documents", [[]])
+    documents = results.get("documents", [[]])[0]
+    metadatas = results.get("metadatas", [[]])[0]
 
-    if not documents or not documents[0]:
-        return []
+    retrieved_chunks = []
 
-    return documents[0]
+    for doc, metadata in zip(documents, metadatas):
+        retrieved_chunks.append(
+            {
+                "text": doc,
+                "source": metadata
+            }
+        )
+
+    return retrieved_chunks

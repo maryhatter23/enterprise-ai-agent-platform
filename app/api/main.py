@@ -62,7 +62,10 @@ async def upload_document(file: UploadFile = File(...)):
 @app.post("/ask")
 def ask_question(request: QuestionRequest):
     relevant_chunks = retrieve_relevant_chunks(request.question)
-    retrieved_context = "\n\n".join(relevant_chunks)
+
+    retrieved_context = "\n\n".join(
+        [chunk["text"] for chunk in relevant_chunks]
+    )
 
     prompt = f"""
 You are an enterprise document intelligence assistant.
