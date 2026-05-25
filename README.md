@@ -51,24 +51,41 @@ https://web-production-c1b1e.up.railway.app/docs
 
 ## Architecture
 
-Upload Document  
-↓  
-Text Extraction  
-↓  
-Chunking & Retrieval  
-↓  
-Retriever Agent  
-↓  
-Reasoning Agent  
-↓  
-Validation Agent  
-↓  
-Correction Agent  
-↓  
-Evaluation Layer  
-↓  
-Final Response  
+```mermaid
+flowchart TD
 
+    A[User] --> B[Streamlit Frontend]
+
+    B --> C[FastAPI Backend]
+
+    C --> D[Document Upload Pipeline]
+
+    D --> E[PDF/TXT Parsing]
+
+    E --> F[Document Chunking]
+
+    F --> G[Sentence Transformer Embeddings]
+
+    G --> H[(ChromaDB Vector Store)]
+
+    I[User Question] --> J[Semantic Retrieval]
+
+    H --> J
+
+    J --> K[Relevant Chunks]
+
+    K --> L[OpenAI GPT-4o-mini]
+
+    L --> M[Citation-aware Response]
+
+    M --> B
+
+    subgraph Cloud Deployment
+        B
+        C
+        H
+    end
+```
 ---
 
 ## Tech Stack
